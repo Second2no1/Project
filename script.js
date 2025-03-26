@@ -122,8 +122,20 @@ function logCheck(input) {
   document.getElementById(`lastChecked-${location.replace(/ /g, "")}`).innerText =
     `Checked by ${officerNumber} on ${formattedTimestamp}`;
 
-  // Save history to localStorage
-  localStorage.setItem(`history-${location}`, JSON.stringify(checkHistory[location]));
+  // Save history to the server
+  fetch('/log-check', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ location, officer: officerNumber, time: formattedTimestamp }),
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log(data);
+    loadCheckHistory(location); // Refresh the history
+  })
+  .catch(error => console.error('Error:', error));
 
   // Update Audit History UI
   const historyElement = document.getElementById(`history-${location.replace(/ /g, "")}`);
@@ -134,20 +146,23 @@ function logCheck(input) {
   input.value = ""; // Clear the input field
 }
 
-// Load check history from localStorage
+// Load check history from the server
 function loadCheckHistory(location) {
-  const history = JSON.parse(localStorage.getItem(`history-${location}`)) || [];
-  checkHistory[location] = history;
-
-  const historyElement = document.getElementById(`history-${location.replace(/ /g, "")}`);
-  historyElement.innerHTML = history.map(entry => `${entry.time} (Officer: ${entry.officer})`).join("<br>");
-
-  const lastCheck = history[history.length - 1];
-  if (lastCheck) {
-    document.getElementById(`lastChecked-${location.replace(/ /g, "")}`).innerText =
-      `Checked by ${lastCheck.officer} on ${lastCheck.time}`;
-  }
+  fetch(`/get-check-history/${location}`)
+  .then(response => response.json())
+  .then(history => {
+    checkHistory[location] = history;
+    const historyElement = document.getElementById(`history-${location.replace(/ /g, "")}`);
+    historyElement.innerHTML = history.map(entry => `${entry.time} (Officer: ${entry.officer})`).join("<br>");
+    const lastCheck = history[history.length - 1];
+    if (lastCheck) {
+      document.getElementById(`lastChecked-${location.replace(/ /g, "")}`).innerText =
+        `Checked by ${lastCheck.officer} on ${lastCheck.time}`;
+    }
+  })
+  .catch(error => console.error('Error:', error));
 }
+
 // Reset the form and data
 function resetForm() {
   // Clear all input fields
@@ -162,14 +177,7 @@ function resetForm() {
     element.innerText = element.id.startsWith("history-") ? "No history" : "Not yet checked";
   });
 
-  // Clear all stored histories in localStorage
-  Object.keys(localStorage).forEach(key => {
-    if (key.startsWith("history-")) {
-      localStorage.removeItem(key);
-    }
-  });
-
-  // Clear in-memory history object
+  // Clear all stored histories in checkHistory
   Object.keys(checkHistory).forEach(location => {
     checkHistory[location] = [];
   });
