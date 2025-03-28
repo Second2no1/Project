@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Check Management</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      margin: 20px;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Contents Page Styling */
+    #categoryLinks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    #categoryLinks a {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    #categoryLinks a:hover {
+      background-color: #0056b3;
+    }
+
+    #resetButtonContainer {
+      margin-top: 30px;
+    }
+
+    #resetButtonContainer button {
+      padding: 10px 15px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #resetButtonContainer button:hover {
+      background-color: #a71d2a;
+    }
+
+    /* Locations Page Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div id="contentsPage">
+    <h1>Check Management</h1>
+    <div id="categoryLinks"></div>
+    <div id="resetButtonContainer">
+      <button onclick="passwordProtectedReset()">Master Reset</button>
+    </div>
+  </div>
+
+  <div id="locationsPage" class="hidden">
+    <h1 id="categoryTitle"></h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>Input Officer</th>
+          <th>Last Checked</th>
+          <th>Audit History</th>
+        </tr>
+      </thead>
+      <tbody id="locationTable"></tbody>
+    </table>
+    <button onclick="showContents()">Back to Contents</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
